@@ -75,15 +75,27 @@ classifiers = [
     MLPClassifier()
 ]
 
+model_scores = {}
+
 for name, clf in zip(names, classifiers):
     print("--" + name)
     model = clf.fit(X_train_tfidf, y_train)
     predicted_y = model.predict(X_test_tfidf)
 
-    print('Accuracy score:', accuracy_score(y_test, predicted_y))
-    print('Precision score:', precision_score(y_test, predicted_y, average=None, zero_division=0))
-    print('Recall score:', recall_score(y_test, predicted_y, average=None, zero_division=0))
+    acc = accuracy_score(y_test, predicted_y)
+    prec = precision_score(y_test, predicted_y, average=None, zero_division=0)
+    recall = recall_score(y_test, predicted_y, average=None, zero_division=0)
+
+    print('Accuracy score:', acc)
+    print('Precision score:', prec)
+    print('Recall score:', recall)
 
     print(classification_report(y_test, predicted_y))
+    model_scores[name] = acc
 
+model_view = [(v,k) for k,v in model_scores.items()]
+model_view.sort(reverse=True)
+print("--Models ranked in descending order--")
+for v,k in model_view:
+    print("%(model)s: %(acc).1f" %{'model': k, 'acc': v * 100.0})
 
