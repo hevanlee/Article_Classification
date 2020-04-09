@@ -1,9 +1,9 @@
 import pandas as pd
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import SGDClassifier
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, classification_report
 
-df = pd.read_csv("training.csv")
+df = pd.read_csv("../training.csv")
 
 data = df["article_words"]
 topics = df["topic"]
@@ -54,7 +54,7 @@ X_train_tfidf = tfidf_transformer.fit_transform(X_train_count)
 X_test_counts = count.transform(X_test)
 X_test_tfidf = tfidf_transformer.transform(X_test_counts)
 
-clf = RandomForestClassifier()
+clf = SGDClassifier()
 model = clf.fit(X_train_tfidf, y_train)
 
 predicted_y = model.predict(X_test_tfidf)

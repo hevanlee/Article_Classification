@@ -6,7 +6,7 @@ from sklearn.naive_bayes import MultinomialNB, BernoulliNB
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, classification_report
 
-df = pd.read_csv('training.csv')
+df = pd.read_csv('../training.csv')
 
 data = df['article_words']
 topics = df['topic']
