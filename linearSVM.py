@@ -1,19 +1,13 @@
 import numpy as np
 import pandas as pd
-from sklearn.svm import LinearSVC
-from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.linear_model import SGDClassifier
+from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, classification_report
 
 df = pd.read_csv("training.csv")
 
 data = df["article_words"]
 topics = df["topic"]
-
-# Create bag of words
-count = CountVectorizer()
-bag_of_words = count.fit_transform(data)
-
-X = bag_of_words
 
 labels = []
 for topic in topics:
@@ -46,19 +40,25 @@ df['labels'] = labels
 y = labels
 
 # Divide training set into training (9000) and development (500) sets
-X_train = X[:9000]
-X_test = X[9000:]
+X_train = data[:9000]
+X_test = data[9000:]
 y_train = y[:9000]
 y_test = y[9000:]
 
-# TODO: Create new unseen test instances
-# test1 = count.transform([''])
-# test2 = count.transform([''])
+# Create bag of words
+count = CountVectorizer()
+X_train_count = count.fit_transform(X_train)
 
-clf = LinearSVC(max_iter = 1000)
-model = clf.fit(X_train, y_train)
+tfidf_transformer = TfidfTransformer()
+X_train_tfidf = tfidf_transformer.fit_transform(X_train_count)
 
-predicted_y = model.predict(X_test)
+X_test_counts = count.transform(X_test)
+X_test_tfidf = tfidf_transformer.transform(X_test_counts)
+
+clf = SGDClassifier()
+model = clf.fit(X_train_tfidf, y_train)
+
+predicted_y = model.predict(X_test_tfidf)
 
 print('Accuracy score:', accuracy_score(y_test, predicted_y))
 print('Precision score:', precision_score(y_test, predicted_y, average=None, zero_division=0))
