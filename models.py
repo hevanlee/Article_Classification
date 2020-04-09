@@ -72,7 +72,7 @@ classifiers = [
     DecisionTreeClassifier(),
     RandomForestClassifier(),
     AdaBoostClassifier(),
-    MLPClassifier(alpha=0.5) #73.8% when run with alpha = 1
+    MLPClassifier(alpha=0.1) #73.8% when run w/ alpha = 1, 78.2% when run w/ alpha = 0.1, 76% w/ alpha = 0.5, 77.6% when run w/ alpha = 0.01
 ]
 
 model_scores = {}
