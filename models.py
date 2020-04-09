@@ -62,7 +62,7 @@ X_test_tfidf = tfidf_transformer.transform(X_test_counts)
 names = ["K Nearest Neighbours", "Bernoulli Naive Bayes",
 "Multinomial Naive Bayes", "Linear SVM",
 "Decision Tree Classifier", "Random Forest Classifier", 
-"AdaBoost Classifier", "Multiple Layer Perceptron"]
+"AdaBoost Classifier"]#, "Multiple Layer Perceptron"]
 
 classifiers = [
     KNeighborsClassifier(),
@@ -72,18 +72,26 @@ classifiers = [
     DecisionTreeClassifier(),
     RandomForestClassifier(),
     AdaBoostClassifier(),
-    MLPClassifier()
+    # MLPClassifier()
 ]
+
+model_scores = {}
 
 for name, clf in zip(names, classifiers):
     print("--" + name)
     model = clf.fit(X_train_tfidf, y_train)
     predicted_y = model.predict(X_test_tfidf)
 
-    print('Accuracy score:', accuracy_score(y_test, predicted_y))
-    print('Precision score:', precision_score(y_test, predicted_y, average=None, zero_division=0))
-    print('Recall score:', recall_score(y_test, predicted_y, average=None, zero_division=0))
+    acc = accuracy_score(y_test, predicted_y)
+    prec = precision_score(y_test, predicted_y, average=None, zero_division=0)
+    recall = recall_score(y_test, predicted_y, average=None, zero_division=0)
+
+    print('Accuracy score:', acc)
+    print('Precision score:', prec)
+    print('Recall score:', recall)
 
     print(classification_report(y_test, predicted_y))
+    model_scores[name] = acc
 
+print(sorted(model_scores, key=model_scores.get))
 
