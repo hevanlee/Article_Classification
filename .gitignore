@@ -1,8 +1,23 @@
+Skip to content
+Search or jump to…
 
-# Created by https://www.gitignore.io/api/python
-# Edit at https://www.gitignore.io/?templates=python
+Pull requests
+Issues
+Marketplace
+Explore
+ 
+@hevanlee 
+Learn Git and GitHub without any code!
+Using the Hello World guide, you’ll start a branch, write comments, and open a pull request.
 
-### Python ###
+
+Code Issues 0 Pull requests 0 Projects 0 Actions Wiki Security Pulse
+SENG3011_code-onavirus/.gitignore
+@kenvinyu kenvinyu Added functional bonus challenge endpoint
+91284f5 23 days ago
+@kenvinyu@Frakka3
+138 lines (110 sloc)  1.81 KB
+  
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -52,12 +67,23 @@ htmlcov/
 nosetests.xml
 coverage.xml
 *.cover
+*.py,cover
 .hypothesis/
 .pytest_cache/
 
 # Translations
 *.mo
 *.pot
+
+# Django stuff:
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Flask stuff:
+instance/
+.webassets-cache
 
 # Scrapy stuff:
 .scrapy
@@ -67,6 +93,13 @@ docs/_build/
 
 # PyBuilder
 target/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
 
 # pyenv
 .python-version
@@ -78,11 +111,24 @@ target/
 #   install all needed dependencies.
 #Pipfile.lock
 
-# celery beat schedule file
+# PEP 582; used by e.g. github.com/David-OConnor/pyflow
+__pypackages__/
+
+# Celery stuff
 celerybeat-schedule
+celerybeat.pid
 
 # SageMath parsed files
 *.sage.py
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
 
 # Spyder project settings
 .spyderproject
@@ -90,11 +136,6 @@ celerybeat-schedule
 
 # Rope project settings
 .ropeproject
-
-# Mr Developer
-.mr.developer.cfg
-.project
-.pydevproject
 
 # mkdocs documentation
 /site
@@ -107,4 +148,23 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# End of https://www.gitignore.io/api/python
+# DS Store
+.DS_Store
+
+# Log files
+.log
+
+
+_jhu_path.py
+© 2020 GitHub, Inc.
+Terms
+Privacy
+Security
+Status
+Help
+Contact GitHub
+Pricing
+API
+Training
+Blog
+About
