@@ -1,4 +1,3 @@
-import numpy as np
 import pandas as pd
 from sklearn.linear_model import SGDClassifier
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
@@ -45,7 +44,7 @@ X_test = data[9000:]
 y_train = y[:9000]
 y_test = y[9000:]
 
-# Create bag of words
+# Fit to training set
 count = CountVectorizer()
 X_train_count = count.fit_transform(X_train)
 
