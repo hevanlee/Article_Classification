@@ -66,7 +66,7 @@ names = ["K Nearest Neighbours", "Bernoulli Naive Bayes",
 
 classifiers = [
     KNeighborsClassifier(),
-    BernoulliNB(),
+    BernoulliNB(alpha=0),
     MultinomialNB(alpha=0),
     SGDClassifier(),
     DecisionTreeClassifier(),
