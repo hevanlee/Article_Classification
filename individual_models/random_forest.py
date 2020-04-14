@@ -1,7 +1,12 @@
 import pandas as pd
-from sklearn.ensemble import RandomForestClassifier
+import numpy as np
+from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, classification_report
+rf = RandomForestRegressor(random_state = 42)
+from pprint import pprint
+
+from sklearn.model_selection import RandomizedSearchCV, validation_curve
 
 df = pd.read_csv("../training.csv")
 
@@ -54,13 +59,16 @@ X_train_tfidf = tfidf_transformer.fit_transform(X_train_count)
 X_test_counts = count.transform(X_test)
 X_test_tfidf = tfidf_transformer.transform(X_test_counts)
 
-clf = RandomForestClassifier()
+clf = RandomForestClassifier() #n_estimators=200, max_depth=3, random_state=0
 model = clf.fit(X_train_tfidf, y_train)
-
 predicted_y = model.predict(X_test_tfidf)
 
-print('Accuracy score:', accuracy_score(y_test, predicted_y))
-print('Precision score:', precision_score(y_test, predicted_y, average=None, zero_division=0))
-print('Recall score:', recall_score(y_test, predicted_y, average=None, zero_division=0))
+acc = accuracy_score(y_test, predicted_y)
+prec = precision_score(y_test, predicted_y, average=None, zero_division=0)
+recall = recall_score(y_test, predicted_y, average=None, zero_division=0)
+
+print('Accuracy score:', acc)
+print('Precision score:', prec)
+print('Recall score:', recall)
 
 print(classification_report(y_test, predicted_y))

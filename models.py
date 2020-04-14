@@ -7,6 +7,7 @@ from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
 from sklearn.neural_network import MLPClassifier
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, classification_report
+import matplotlib.pyplot as plt
 
 df = pd.read_csv("training.csv")
 
@@ -39,6 +40,13 @@ for topic in topics:
         labels.append(0)
 
 df['labels'] = labels
+# df2 = df[df.topic != "IRRELEVANT"]
+
+# plot class distribution of the data 
+# fig = plt.figure(figsize=(8,6))
+# df.groupby('topic').article_words.count().plot.bar(ylim=0)
+# plt.ylabel('Number of Articles')
+# plt.show()
 
 # Create target vector
 y = labels
