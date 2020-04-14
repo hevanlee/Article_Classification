@@ -1,0 +1,33 @@
+0 IRRELEVANT
+    training 4734
+    test 266
+1 ARTS CULTURE ENTERTAINMENT
+    training 117
+    test 3
+2 BIOGRAPHIES PERSONALITIES PEOPLE
+    training 167
+    test 15
+3 DEFENCE
+    training 258
+    test 13
+4 DOMESTIC MARKETS
+    training 133
+    test 2
+5 FOREX MARKETS
+    training 845
+    test 48
+6 HEALTH
+    training 183
+    test 14
+7 MONEY MARKETS
+    training 1673
+    test 69
+8 SCIENCE AND TECHNOLOGY
+    training 70
+    test 3
+9 SHARE LISTINGS
+    training 218
+    test 7
+10 SPORTS 
+    training 1102
+    test 60
