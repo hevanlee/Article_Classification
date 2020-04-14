@@ -20,24 +20,24 @@ X = bag_of_words
 
 labels = []
 for topic in topics:
-    if topic == 'ARTS CULTURE ENTERTAINMENT':
-        labels.append(1)
-    elif topic == 'BIOGRAPHIES PERSONALITIES PEOPLE':
+    #if topic == 'ARTS CULTURE ENTERTAINMENT':
+    #    labels.append(1)
+    if topic == 'BIOGRAPHIES PERSONALITIES PEOPLE':
         labels.append(2)
     elif topic == 'DEFENCE':
         labels.append(3)
-    elif topic == 'DOMESTIC MARKETS':
-        labels.append(4)
+    #elif topic == 'DOMESTIC MARKETS':
+    #    labels.append(4)
     elif topic == 'FOREX MARKETS':
         labels.append(5)
-    elif topic == 'HEALTH':
-        labels.append(6)
+    #elif topic == 'HEALTH':
+    #    labels.append(6)
     elif topic == 'MONEY MARKETS':
         labels.append(7)
-    elif topic == 'SCIENCE AND TECHNOLOGY':
-        labels.append(8)
-    elif topic == 'SHARE LISTINGS':
-        labels.append(9)
+    #elif topic == 'SCIENCE AND TECHNOLOGY':
+    #    labels.append(8)
+    #elif topic == 'SHARE LISTINGS':
+    #    labels.append(9)
     elif topic == 'SPORTS':
         labels.append(10)
     else: 
