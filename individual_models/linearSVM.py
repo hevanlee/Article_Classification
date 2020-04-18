@@ -2,6 +2,8 @@ import pandas as pd
 from sklearn.linear_model import SGDClassifier
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, classification_report
+from sklearn.pipeline import make_pipeline
+from sklearn.model_selection import GridSearchCV
 
 df = pd.read_csv("../training.csv")
 
@@ -44,23 +46,36 @@ X_test = data[9000:]
 y_train = y[:9000]
 y_test = y[9000:]
 
-# Fit to training set
-count = CountVectorizer()
-X_train_count = count.fit_transform(X_train)
+# pipeline combining text feature extractor with SGDClassifier
+pipeline = make_pipeline(
+    CountVectorizer(),
+    TfidfTransformer(),
+    SGDClassifier()
+)
 
-tfidf_transformer = TfidfTransformer()
-X_train_tfidf = tfidf_transformer.fit_transform(X_train_count)
+hyperparameters = {
+    'sgdclassifier__loss': ['hinge', 'modified_huber', 'squared_hinge'],
+    'sgdclassifier__penalty': ['l2', 'elasticnet'],
+    'sgdclassifier__alpha': [0.00001, 0.0001, 0.001, 0.01, 0.1, 1],
+    'sgdclassifier__max_iter': [1000,5000,10000],
+    'sgdclassifier__n_iter_no_change': [5, 50, 100, 300]
+}
 
-X_test_counts = count.transform(X_test)
-X_test_tfidf = tfidf_transformer.transform(X_test_counts)
+clf = GridSearchCV(pipeline, hyperparameters, cv=10)
 
-clf = SGDClassifier()
-model = clf.fit(X_train_tfidf, y_train)
+# Fit
+clf.fit(X_train, y_train)
 
-predicted_y = model.predict(X_test_tfidf)
+# Predict
+y_pred = clf.predict(X_test)
 
-print('Accuracy score:', accuracy_score(y_test, predicted_y))
-print('Precision score:', precision_score(y_test, predicted_y, average=None, zero_division=0))
-print('Recall score:', recall_score(y_test, predicted_y, average=None, zero_division=0))
+print('Accuracy score:', accuracy_score(y_test, y_pred))
+print('Precision score:', precision_score(y_test, y_pred, average=None, zero_division=0))
+print('Recall score:', recall_score(y_test, y_pred, average=None, zero_division=0))
 
-print(classification_report(y_test, predicted_y))
+print(classification_report(y_test, y_pred))
+
+print("Best parameters:")
+best_params = clf.best_estimator_.get_params()
+for param in sorted(best_params.keys()):
+    print("\t%s: %r" % (param, best_params[param]))
