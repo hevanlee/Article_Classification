@@ -54,11 +54,9 @@ pipeline = make_pipeline(
 )
 
 hyperparameters = {
-    'sgdclassifier__loss': ['hinge', 'modified_huber', 'squared_hinge'],
-    'sgdclassifier__penalty': ['l2', 'elasticnet'],
-    'sgdclassifier__alpha': [0.00001, 0.0001, 0.001, 0.01, 0.1, 1],
-    'sgdclassifier__max_iter': [1000,5000,10000],
-    'sgdclassifier__n_iter_no_change': [5, 50, 100, 300]
+    'sgdclassifier__loss': ['hinge']#, 'squared_hinge'],
+    'sgdclassifier__alpha': [0.0001 ]#, 0.00001, 0.001, 0.01, 0.1, 1],
+    'sgdclassifier__max_iter': [5000] #, 1000, 10000]
 }
 
 clf = GridSearchCV(pipeline, hyperparameters, cv=10)
@@ -75,7 +73,9 @@ print('Recall score:', recall_score(y_test, y_pred, average=None, zero_division=
 
 print(classification_report(y_test, y_pred))
 
+'''
 print("Best parameters:")
 best_params = clf.best_estimator_.get_params()
 for param in sorted(best_params.keys()):
     print("\t%s: %r" % (param, best_params[param]))
+'''
