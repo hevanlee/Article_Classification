@@ -54,8 +54,8 @@ pipeline = make_pipeline(
 )
 
 hyperparameters = {
-    'sgdclassifier__loss': ['hinge']#, 'squared_hinge'],
-    'sgdclassifier__alpha': [0.0001 ]#, 0.00001, 0.001, 0.01, 0.1, 1],
+    'sgdclassifier__loss': ['hinge'],#, 'squared_hinge'],
+    'sgdclassifier__alpha': [0.0001 ],#, 0.00001, 0.001, 0.01, 0.1, 1],
     'sgdclassifier__max_iter': [5000] #, 1000, 10000]
 }
 
