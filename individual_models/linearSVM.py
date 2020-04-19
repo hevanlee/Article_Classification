@@ -73,9 +73,7 @@ print('Recall score:', recall_score(y_test, y_pred, average=None, zero_division=
 
 print(classification_report(y_test, y_pred))
 
-'''
-print("Best parameters:")
-best_params = clf.best_estimator_.get_params()
-for param in sorted(best_params.keys()):
-    print("\t%s: %r" % (param, best_params[param]))
-'''
+# print("Best parameters:")
+# best_params = clf.best_estimator_.get_params()
+# for param in sorted(best_params.keys()):
+#     print("\t%s: %r" % (param, best_params[param]))
