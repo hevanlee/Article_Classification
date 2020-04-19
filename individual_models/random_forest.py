@@ -58,8 +58,9 @@ X_train_tfidf = tfidf_transformer.fit_transform(X_train_count)
 
 X_test_counts = count.transform(X_test)
 X_test_tfidf = tfidf_transformer.transform(X_test_counts)
-
-clf = RandomForestClassifier() #n_estimators=200, max_depth=3, random_state=0
+# {'n_estimators': 100, 'max_features': 'auto', 'max_depth': None}
+# n_estimators': 263, 'max_features': 'auto', 'max_depth': 140
+clf = RandomForestClassifier() # n_estimators=100, max_features="auto", max_depth=None
 model = clf.fit(X_train_tfidf, y_train)
 predicted_y = model.predict(X_test_tfidf)
 

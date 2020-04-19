@@ -59,7 +59,23 @@ X_train_tfidf = tfidf_transformer.fit_transform(X_train_count)
 X_test_counts = count.transform(X_test)
 X_test_tfidf = tfidf_transformer.transform(X_test_counts)
 
-clf = RandomForestClassifier() #random_state=0
+clf = RandomForestClassifier(bootstrap=True, ccp_alpha=0.0, class_weight=None,
+                       criterion='gini', max_depth=None, max_features='auto',
+                       max_leaf_nodes=None, max_samples=None,
+                       min_impurity_decrease=0.0, min_impurity_split=None,
+                       min_samples_leaf=1, min_samples_split=5,
+                       min_weight_fraction_leaf=0.0, n_estimators=50,
+                       n_jobs=None, oob_score=False, random_state=None,
+                       verbose=0, warm_start=False)
+# clf = RandomForestClassifier() 
+# clf = RandomForestClassifier(bootstrap=True, ccp_alpha=0.0, class_weight=None,
+#                        criterion='gini', max_depth=None, max_features='auto',
+#                        max_leaf_nodes=None, max_samples=None,
+#                        min_impurity_decrease=0.0, min_impurity_split=None,
+#                        min_samples_leaf=1, min_samples_split=5,
+#                        min_weight_fraction_leaf=0.0, n_estimators=100,
+#                        n_jobs=None, oob_score=False, random_state=None,
+#                        verbose=0, warm_start=False)
 model = clf.fit(X_train_tfidf, y_train)
 predicted_y = model.predict(X_test_tfidf)
 
@@ -80,14 +96,29 @@ print('Accuracy score:', acc)
 ############################ GRID SEARCH CV #################################
 
 # Create the parameter grid based on the results of random search 
+# trial 1: 
+# param_grid = {
+#     'max_depth': [100, 200, 500, None],
+#     'min_samples_leaf': [1, 2, 4],
+#     'min_samples_split': [2, 5, 10],
+#     'n_estimators': [100, 200, 300, 500, 1000]
+# }
+
 param_grid = {
-    'bootstrap': [True],
-    'max_depth': [80, 100, 150, 200, None],
-    'max_features': ['auto', 'log2', None],
-    'min_samples_leaf': [1, 3, 4, 5],
-    'min_samples_split': [2, 5, 10],
-    'n_estimators': [100, 200, 300, 500, 1000]
+    'max_depth': [250, 750, 1000, None],
+    'min_samples_leaf': [1, 6, 10],
+    'min_samples_split': [5, 15, 20],
+    'n_estimators': [50, 100, 400, 1500]
 }
+
+# param_grid = {
+#     'bootstrap': [True],
+#     'max_depth': [80, 100, 150, 200, None],
+#     'max_features': ['auto', 'log2', None],
+#     'min_samples_leaf': [1, 3, 4, 5],
+#     'min_samples_split': [2, 5, 10],
+#     'n_estimators': [100, 200, 300, 500, 1000]
+# }
 
 # Instantiate the grid search model
 grid_search = GridSearchCV(estimator = clf, param_grid = param_grid, 
@@ -139,3 +170,14 @@ print(best_grid)
 # rfc_random.fit(X_train_tfidf, y_train)
 # # print results
 # print(rfc_random.best_params_)
+
+
+# {'max_depth': None, 'min_samples_leaf': 1, 'min_samples_split': 5, 'n_estimators': 100}
+# RandomForestClassifier(bootstrap=True, ccp_alpha=0.0, class_weight=None,
+#                        criterion='gini', max_depth=None, max_features='auto',
+#                        max_leaf_nodes=None, max_samples=None,
+#                        min_impurity_decrease=0.0, min_impurity_split=None,
+#                        min_samples_leaf=1, min_samples_split=5,
+#                        min_weight_fraction_leaf=0.0, n_estimators=100,
+#                        n_jobs=None, oob_score=False, random_state=None,
+#                        verbose=0, warm_start=False)
