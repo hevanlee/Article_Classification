@@ -6,11 +6,18 @@ from sklearn.pipeline import make_pipeline
 from sklearn.model_selection import GridSearchCV
 
 df = pd.read_csv("../training.csv")
+test_df = pd.read_csv("../test.csv")
+
+train_length = len(df)
+
+df = df.append(test_df)
 
 data = df["article_words"]
+
 topics = df["topic"]
 
 labels = []
+
 for topic in topics:
     if topic == 'ARTS CULTURE ENTERTAINMENT':
         labels.append(1)
@@ -38,13 +45,14 @@ for topic in topics:
 df['labels'] = labels
 
 # Create target vector
-y = labels
+# y = labels
 
-# Divide training set into training (9000) and development (500) sets
-X_train = data[:9000]
-X_test = data[9000:]
-y_train = y[:9000]
-y_test = y[9000:]
+# Resplit data into training set into training and testing sets
+X_train = data[:train_length]
+y_train = labels[:train_length]
+
+X_test = data[train_length:]
+y_test = labels[train_length:]
 
 # pipeline combining text feature extractor with SGDClassifier
 pipeline = make_pipeline(
