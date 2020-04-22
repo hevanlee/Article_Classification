@@ -1,7 +1,12 @@
 import pandas as pd
-from sklearn.ensemble import RandomForestClassifier
+import numpy as np
+from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, classification_report
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, classification_report, confusion_matrix
+rf = RandomForestRegressor(random_state = 42)
+from pprint import pprint
+
+from sklearn.model_selection import RandomizedSearchCV, validation_curve, StratifiedKFold
 
 df = pd.read_csv("../training.csv")
 
@@ -35,6 +40,7 @@ for topic in topics:
 
 df['labels'] = labels
 
+
 # Create target vector
 y = labels
 
@@ -59,8 +65,70 @@ model = clf.fit(X_train_tfidf, y_train)
 
 predicted_y = model.predict(X_test_tfidf)
 
-print('Accuracy score:', accuracy_score(y_test, predicted_y))
-print('Precision score:', precision_score(y_test, predicted_y, average=None, zero_division=0))
-print('Recall score:', recall_score(y_test, predicted_y, average=None, zero_division=0))
+print('Accuracy score:', accuracy_score(y_test, predicted_y)) #acc = accuracy_score(y_test, predicted_y)
+# print('Precision score:', precision_score(y_test, predicted_y, average=None, zero_division=0))
+# print('Recall score:', recall_score(y_test, predicted_y, average=None, zero_division=0))
 
-print(classification_report(y_test, predicted_y))
+# generate the table of precision and recall scores
+# print(classification_report(y_test, predicted_y))
+
+def evaluate(model, test_features, test_labels):
+    predictions = model.predict(test_features)
+    errors = abs(predictions - test_labels)
+    mape = 100 * np.mean(errors / test_labels)
+    accuracy = 100 - mape
+    print('Model Performance')
+    print('Average Error: {:0.4f} degrees.'.format(np.mean(errors)))
+    print('Accuracy = {:0.2f}%.'.format(accuracy))
+    
+    return accuracy
+
+###########
+
+# Random Forest Classifier
+
+# # max depth
+max_depth = [int(x) for x in np.linspace(100, 500, num = 2)]
+max_depth.append(None)
+
+
+# # number of features at every split
+# max_features = ['auto', 'sqrt']
+max_features = ['auto']
+
+# # number of trees in random forest
+
+n_estimators = [int(x) for x in np.linspace(start = 100, stop = 9000, num = 1000)]
+
+# # create random grid
+random_grid = {
+    'max_depth': max_depth,
+    'max_features': max_features,
+    'n_estimators': n_estimators
+}
+#cross validating
+k = StratifiedKFold(n_splits=2)
+
+# Random search of parameters, using 3 fold cross validation, 
+# search across 10 different combinations, and use all available cores
+
+# Random search of parameters
+rfc_random = RandomizedSearchCV(estimator = clf, param_distributions = random_grid, n_iter = 5, cv = 3, verbose=2, random_state=42, n_jobs = -1)
+
+rfc_random.fit(X_train_tfidf, y_train)
+# print results
+# print(rfc_random.best_params_)
+
+new_model = RandomForestClassifier(n_estimators = 10)
+# Fit the model
+new_model.fit(X_train_tfidf, y_train)
+
+base_accuracy = evaluate(new_model, X_test_tfidf, y_test)
+best_random = rfc_random.best_params_
+random_accuracy = evaluate(best_random, test_features, test_labels)
+
+print('Improvement of {:0.2f}%.'.format( 100 * (random_accuracy - base_accuracy) / base_accuracy))
+###########
+print('Accuracy score:', accuracy_score(y_test, predicted_y))
+
+## grid search
