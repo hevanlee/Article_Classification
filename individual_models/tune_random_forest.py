@@ -3,8 +3,6 @@ import numpy as np
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, classification_report, confusion_matrix
-# rf = RandomForestRegressor(random_state = 42)
-from pprint import pprint
 
 from sklearn.model_selection import RandomizedSearchCV, validation_curve, StratifiedKFold, GridSearchCV
 
@@ -170,7 +168,6 @@ print(best_grid)
 # rfc_random.fit(X_train_tfidf, y_train)
 # # print results
 # print(rfc_random.best_params_)
-
 
 # {'max_depth': None, 'min_samples_leaf': 1, 'min_samples_split': 5, 'n_estimators': 100}
 # RandomForestClassifier(bootstrap=True, ccp_alpha=0.0, class_weight=None,
