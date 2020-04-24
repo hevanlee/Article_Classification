@@ -84,72 +84,60 @@ def evaluate(model, test_features, test_labels):
 
 ########### Random Search ###########
 
-# # max depth
-# max_depth = [int(x) for x in np.linspace(100, 500, num = 2)]
-# max_depth.append(None)
+# max depth
+max_depth = [int(x) for x in np.linspace(100, 500, num = 2)]
+max_depth.append(None)
 
-# # number of features at every split
-# max_features = ['auto']
+# number of features at every split
+max_features = ['auto']
 
-# # number of trees in random forest
-# n_estimators = [int(x) for x in np.linspace(start = 100, stop = 9000, num = 1000)]
+# number of trees in random forest
+n_estimators = [int(x) for x in np.linspace(start = 100, stop = 9000, num = 1000)]
 
-# # create random grid
-# random_grid = {
-#     'max_depth': max_depth,
-#     'max_features': max_features,
-#     'n_estimators': n_estimators
-# }
-# #cross validating
-# k = StratifiedKFold(n_splits=2)
+# create random grid
+random_grid = {
+    'max_depth': max_depth,
+    'max_features': max_features,
+    'n_estimators': n_estimators
+}
+#cross validating
+k = StratifiedKFold(n_splits=2)
 
-# # Random search of parameters, using 3 fold cross validation, 
-# # search across 10 different combinations, and use all available cores
+# Random search of parameters, using 3 fold cross validation, 
+# search across 10 different combinations, and use all available cores
 
-# # Random search of parameters
-# rfc_random = RandomizedSearchCV(estimator = clf, param_distributions = random_grid, n_iter = 5, cv = 3, verbose=2, random_state=42, n_jobs = -1)
+# Random search of parameters
+rfc_random = RandomizedSearchCV(estimator = clf, param_distributions = random_grid, n_iter = 5, cv = 3, verbose=2, random_state=42, n_jobs = -1)
 
-# rfc_random.fit(X_train_tfidf, y_train)
-# print(rfc_random.best_params_)
-# best_random = rfc_random.best_estimator_ # rfc_random.best_params_
+rfc_random.fit(X_train_tfidf, y_train)
+print(rfc_random.best_params_)
+best_random = rfc_random.best_estimator_ 
 
 ########### Grid Search ###########
 
 param_grid = {
-    'max_depth': [None]
+    'max_depth': [250, 750, 1000, None],
+    'min_samples_leaf': [1, 6, 10],
+    'min_samples_split': [5, 15, 20],
+    'n_estimators': [50, 100, 400, 1500]
 }
-# param_grid = {
-#     'max_depth': [250, 750, 1000, None],
-#     'min_samples_leaf': [1, 6, 10],
-#     'min_samples_split': [5, 15, 20],
-#     'n_estimators': [50, 100, 400, 1500]
-# }
 
-# # Instantiate the grid search model
+# Instantiate the grid search model
 grid_search = GridSearchCV(estimator = clf, param_grid = param_grid, 
                           cv = 3, n_jobs = -1, verbose = 2)
 grid_search.fit(X_train_tfidf, y_train)
 print(grid_search.best_params_)
 best_grid = grid_search.best_estimator_
+grid_accuracy = evaluate(best_grid, X_test_tfidf, y_test)
 print(best_grid)
-# grid_accuracy = evaluate(best_grid, X_test_tfidf, y_test)
-# print(best_grid)
-# best_grid = RandomForestClassifier(bootstrap=True, ccp_alpha=0.0, class_weight=None,
-# criterion='gini', max_depth=None, max_features='auto',
-# max_leaf_nodes=None, max_samples=None,
-# min_impurity_decrease=0.0, min_impurity_split=None,
-# min_samples_leaf=1, min_samples_split=5,
-# min_weight_fraction_leaf=0.0, n_estimators=50,
-# n_jobs=None, oob_score=False, random_state=None,
-# verbose=0, warm_start=False)
 
 ########### Evaluation Metrics ###########
 
-# def print_improvement(model_accuracy):
-#     print('Improvement of {:0.2f}%.'.format( 100 * (model_accuracy - base_accuracy) / base_accuracy))
+def print_improvement(model_accuracy):
+    print('Improvement of {:0.2f}%.'.format( 100 * (model_accuracy - base_accuracy) / base_accuracy))
 
 base_accuracy = evaluate(model, X_test_tfidf, y_test)
-# random_accuracy = evaluate(best_random, X_test_tfidf, y_test)
+random_accuracy = evaluate(best_random, X_test_tfidf, y_test)
 grid_accuracy = evaluate(best_grid, X_test_tfidf, y_test)
-# print_improvement(random_accuracy)
-# print_improvement(grid_accuracy)
+print_improvement(random_accuracy)
+print_improvement(grid_accuracy)
