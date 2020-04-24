@@ -73,17 +73,6 @@ print('Accuracy score:', accuracy_score(y_test, predicted_y))
 # generate the table of precision and recall scores
 # print(classification_report(y_test, predicted_y))
 
-def evaluate(model, test_features, test_labels):
-    predictions = model.predict(test_features)
-    errors = abs(predictions - test_labels)
-    mape = 100 * np.mean(errors / test_labels)
-    accuracy = 100 - mape
-    print('Model Performance')
-    print('Average Error: {:0.4f} degrees.'.format(np.mean(errors)))
-    print('Accuracy = {:0.2f}%.'.format(accuracy))
-    
-    return accuracy
-
 ###########
 
 # Random Forest Classifier
@@ -122,6 +111,7 @@ print(rfc_random.best_params_)
 print("=======")
 
 random_predicted_y = rfc_random.predict(X_test_tfidf)
+random_accuracy = accuracy_score(y_test, random_predicted_y)
 print('After random forest tuning - Accuracy score:', accuracy_score(y_test, random_predicted_y))
 
 #{'n_estimators': 946, 'max_features': 'auto', 'max_depth': 500}
@@ -133,14 +123,13 @@ new = {
 
 
 
-
 new_model = RandomForestClassifier(n_estimators = 100)
 # Fit the model
 new_model.fit(X_train_tfidf, y_train)
 
-base_accuracy = evaluate(new_model, X_test_tfidf, y_test)
-best_random = rfc_random.best_params_
-random_accuracy = evaluate(best_random, X_test_tfidf, y_test)
+base_model_y = new_model.predict(X_test_tfidf)
+base_accuracy = accuracy_score(y_test, base_model_y)
+
 
 print('Improvement of {:0.2f}%.'.format( 100 * (random_accuracy - base_accuracy) / base_accuracy))
 ##########
