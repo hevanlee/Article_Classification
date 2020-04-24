@@ -18,29 +18,21 @@ topics = df["topic"]
 
 labels = []
 
+all_labels = {
+    'ARTS CULTURE ENTERTAINMENT': 1,
+    'BIOGRAPHIES PERSONALITIES PEOPLE': 2,
+    'DEFENCE': 3,
+    'DOMESTIC MARKETS': 4,
+    'FOREX MARKETS': 5,
+    'HEALTH': 6,
+    'MONEY MARKETS': 7,
+    'SCIENCE AND TECHNOLOGY': 8,
+    'SHARE LISTINGS': 9,
+    'SPORTS': 10,
+    'IRRELEVANT': 0
+}
 for topic in topics:
-    if topic == 'ARTS CULTURE ENTERTAINMENT':
-        labels.append(1)
-    elif topic == 'BIOGRAPHIES PERSONALITIES PEOPLE':
-        labels.append(2)
-    elif topic == 'DEFENCE':
-        labels.append(3)
-    elif topic == 'DOMESTIC MARKETS':
-        labels.append(4)
-    elif topic == 'FOREX MARKETS':
-        labels.append(5)
-    elif topic == 'HEALTH':
-        labels.append(6)
-    elif topic == 'MONEY MARKETS':
-        labels.append(7)
-    elif topic == 'SCIENCE AND TECHNOLOGY':
-        labels.append(8)
-    elif topic == 'SHARE LISTINGS':
-        labels.append(9)
-    elif topic == 'SPORTS':
-        labels.append(10)
-    else: 
-        labels.append(0)
+    labels.append(all_labels[topic])
 
 df['labels'] = labels
 
@@ -72,8 +64,20 @@ clf.fit(X_train_tfidf, y_train)
 
 # Predict
 y_pred = clf.predict(X_test_tfidf)
+probas = clf.predict_proba(X_test_tfidf)
 
-print('Probabilities of classification:', clf.predict_proba(X_test_tfidf))
+# Store each article, classification and probability
+class_proba = []
+
+for i in range(0, len(probas)):
+    article = {}
+    article['article_id'] = i
+    article['features'] = X_test[i]
+    article['class'] = list(all_labels.keys())[list(all_labels.values()).index(y_pred[i])] 
+    article['probability'] = max(probas[i])
+    class_proba.append(article)
+
+print('Probabilities of classification:', class_proba[0])
 
 print('Accuracy score:', accuracy_score(y_test, y_pred))
 print('Precision score:', precision_score(y_test, y_pred, average=None, zero_division=0))
