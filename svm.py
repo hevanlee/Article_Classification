@@ -77,7 +77,8 @@ for i in range(0, len(probas)):
     article['probability'] = max(probas[i])
     class_proba.append(article)
 
-print('Probabilities of classification:', class_proba[0])
+# Uncomment below to see
+# print('Probabilities of classification:', class_proba[0])
 
 print('Accuracy score:', accuracy_score(y_test, y_pred))
 print('Precision score:', precision_score(y_test, y_pred, average=None, zero_division=0))
