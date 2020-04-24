@@ -110,6 +110,7 @@ k = StratifiedKFold(n_splits=2)
 rfc_random = RandomizedSearchCV(estimator = clf, param_distributions = random_grid, n_iter = 5, cv = 3, verbose=2, random_state=42, n_jobs = -1)
 
 rfc_random.fit(X_train_tfidf, y_train)
+<<<<<<< HEAD
 print(rfc_random.best_params_)
 best_random = rfc_random.best_estimator_ 
 
