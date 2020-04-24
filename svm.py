@@ -5,8 +5,8 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 from sklearn.pipeline import make_pipeline
 from sklearn.calibration import CalibratedClassifierCV
 
-df = pd.read_csv("../training.csv")
-test_df = pd.read_csv("../test.csv")
+df = pd.read_csv("training.csv")
+test_df = pd.read_csv("test.csv")
 
 train_length = len(df)
 
@@ -73,7 +73,7 @@ clf.fit(X_train_tfidf, y_train)
 # Predict
 y_pred = clf.predict(X_test_tfidf)
 
-print('Probabilities of classification:', clf.predict_proba(X_train_tfidf))
+print('Probabilities of classification:', clf.predict_proba(X_test_tfidf))
 
 print('Accuracy score:', accuracy_score(y_test, y_pred))
 print('Precision score:', precision_score(y_test, y_pred, average=None, zero_division=0))
