@@ -5,6 +5,7 @@ from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, classification_report, confusion_matrix
 rf = RandomForestRegressor(random_state = 42)
 from pprint import pprint
+from sklearn.model_selection import GridSearchCV
 
 from sklearn.model_selection import RandomizedSearchCV, validation_curve, StratifiedKFold
 
@@ -65,7 +66,7 @@ model = clf.fit(X_train_tfidf, y_train)
 
 predicted_y = model.predict(X_test_tfidf)
 
-print('Accuracy score:', accuracy_score(y_test, predicted_y)) #acc = accuracy_score(y_test, predicted_y)
+print('Accuracy score:', accuracy_score(y_test, predicted_y)) 
 # print('Precision score:', precision_score(y_test, predicted_y, average=None, zero_division=0))
 # print('Recall score:', recall_score(y_test, predicted_y, average=None, zero_division=0))
 
@@ -116,19 +117,52 @@ k = StratifiedKFold(n_splits=2)
 rfc_random = RandomizedSearchCV(estimator = clf, param_distributions = random_grid, n_iter = 5, cv = 3, verbose=2, random_state=42, n_jobs = -1)
 
 rfc_random.fit(X_train_tfidf, y_train)
-# print results
-# print(rfc_random.best_params_)
 
-new_model = RandomForestClassifier(n_estimators = 10)
+print(rfc_random.best_params_)
+print("=======")
+
+random_predicted_y = rfc_random.predict(X_test_tfidf)
+print('After random forest tuning - Accuracy score:', accuracy_score(y_test, random_predicted_y))
+
+#{'n_estimators': 946, 'max_features': 'auto', 'max_depth': 500}
+new = {
+    'n_estimators': [1258], 
+    'max_features': ['auto'], 
+    'max_depth': [500]
+    }
+
+
+
+
+new_model = RandomForestClassifier(n_estimators = 100)
 # Fit the model
 new_model.fit(X_train_tfidf, y_train)
 
 base_accuracy = evaluate(new_model, X_test_tfidf, y_test)
 best_random = rfc_random.best_params_
-random_accuracy = evaluate(best_random, test_features, test_labels)
+random_accuracy = evaluate(best_random, X_test_tfidf, y_test)
 
 print('Improvement of {:0.2f}%.'.format( 100 * (random_accuracy - base_accuracy) / base_accuracy))
-###########
-print('Accuracy score:', accuracy_score(y_test, predicted_y))
+##########
+
 
 ## grid search
+grid = GridSearchCV(estimator=clf, param_grid=new, cv=k)
+
+# grid = GridSearchCV(estimator=rfc, param_grid=rfc_random.best_params_, cv=10)
+
+# Fit
+grid.fit(X_train_tfidf, random_predicted_y)
+print(grid.best_params_)
+best_grid = grid.best_estimator_
+grid_accuracy = evaluate(best_grid, X_test_tfidf, random_predicted_y)
+print(best_grid)
+
+# Predict
+grid_search = clf.predict(X_test_tfidf)
+
+print('Accuracy score:', accuracy_score(y_test, random_predicted_y))
+print('Precision score:', precision_score(y_test, random_predicted_y, average=None, zero_division=0))
+print('Recall score:', recall_score(y_test, random_predicted_y, average=None, zero_division=0))
+
+print(classification_report(y_test, random_predicted_y))
