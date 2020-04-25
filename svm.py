@@ -165,7 +165,7 @@ for topic in expected_num.keys():
     recommended[topic] = article_nums
     recommendations.append(recommended)
 
-# Manual checking to ensure each topic has articles sorted from high prob to lowest
+# Recommendations
 for topic in recommendations:
     print(topic)
 print()
