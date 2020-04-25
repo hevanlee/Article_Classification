@@ -171,8 +171,11 @@ for topic in recommendations:
 print()
 
 # Comparing model and predictions with actual labels
+print("Metrics for model test data:")
 print('Accuracy score:', accuracy_score(y_test, y_pred))
 print('Precision score:', precision_score(y_test, y_pred, average=None, zero_division=0))
 print('Recall score:', recall_score(y_test, y_pred, average=None, zero_division=0))
 
 print(classification_report(y_test, y_pred))
+
+print("Metrics for recommendations:")
