@@ -80,7 +80,8 @@ class_proba_10 = []
 class_proba_0= []
 
 class_proba = []
-# add article number
+
+# Sort through predictions, matching article numbers, features, topic, and probability
 for i in range(0, len(probas)):
     article = {}
     article['article_number'] = i + 9501
@@ -164,18 +165,14 @@ for topic in expected_num.keys():
     recommended[topic] = article_nums
     recommendations.append(recommended)
 
+# Manual checking to ensure each topic has articles sorted from high prob to lowest
 for topic in recommendations:
     print(topic)
 print()
 
+# Comparing model and predictions with actual labels
 print('Accuracy score:', accuracy_score(y_test, y_pred))
 print('Precision score:', precision_score(y_test, y_pred, average=None, zero_division=0))
 print('Recall score:', recall_score(y_test, y_pred, average=None, zero_division=0))
 
 print(classification_report(y_test, y_pred))
-
-
-# print("Best parameters:")
-# best_params = clf.best_estimator_.get_params()
-# for param in sorted(best_params.keys()):
-#     print("\t%s: %r" % (param, best_params[param]))
