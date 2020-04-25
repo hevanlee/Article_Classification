@@ -67,24 +67,113 @@ y_pred = clf.predict(X_test_tfidf)
 probas = clf.predict_proba(X_test_tfidf)
 
 # Store each article, classification and probability
-class_proba = []
+class_proba_1 = []
+class_proba_2 = []
+class_proba_3 = []
+class_proba_4 = []
+class_proba_5 = []
+class_proba_6 = []
+class_proba_7 = []
+class_proba_8 = []
+class_proba_9 = []
+class_proba_10 = []
+class_proba_0= []
 
+class_proba = []
+# add article number
 for i in range(0, len(probas)):
     article = {}
-    article['article_id'] = i
-    article['features'] = X_test[i]
-    article['class'] = list(all_labels.keys())[list(all_labels.values()).index(y_pred[i])] 
+    article['article_number'] = i + 9501
+    article['article_words'] = X_test[i]
+    article['topic'] = list(all_labels.keys())[list(all_labels.values()).index(y_pred[i])] 
     article['probability'] = max(probas[i])
+    
+    if y_pred[i] == 1:
+        class_proba_1.append(article)
+    elif y_pred[i] == 2:
+        class_proba_2.append(article)
+    elif y_pred[i] == 3:
+        class_proba_3.append(article)
+    elif y_pred[i] == 4:
+        class_proba_4.append(article)
+    elif y_pred[i] == 5:
+        class_proba_5.append(article)
+    elif y_pred[i] == 6:
+        class_proba_6.append(article)
+    elif y_pred[i] == 7:
+        class_proba_7.append(article)
+    elif y_pred[i] == 8:
+        class_proba_8.append(article)
+    elif y_pred[i] == 9:
+        class_proba_9.append(article)
+    elif y_pred[i] == 10:
+        class_proba_10.append(article)
+    elif y_pred[i] == 0:
+        class_proba_0.append(article)
+    
     class_proba.append(article)
 
-# Uncomment below to see
-# print('First article:', class_proba[0])
+# Check X_test and class_proba articles are in line
+for i in range(0, len(class_proba)):
+    if class_proba[i]['article_words'] != X_test[i]:
+        print("X_test and class_proba not lined up")
+        exit()
+
+# Expected distribution of articles in test set by topic
+expected_num = {
+    'ARTS CULTURE ENTERTAINMENT': 6,
+    'BIOGRAPHIES PERSONALITIES PEOPLE': 9,
+    'DEFENCE': 14,
+    'DOMESTIC MARKETS': 7,
+    'FOREX MARKETS': 44,
+    'HEALTH': 10,
+    'MONEY MARKETS': 88,
+    'SCIENCE AND TECHNOLOGY': 4,
+    'SHARE LISTINGS': 11,
+    'SPORTS': 10,
+    'IRRELEVANT': 249
+}
+
+# Recommend up to expected num of articles above benchmark
+recommendations = []
+
+class_proba = []
+class_proba.append(sorted(class_proba_1, key = lambda i: i['probability'], reverse=True))
+class_proba.append(sorted(class_proba_2, key = lambda i: i['probability'], reverse=True))
+class_proba.append(sorted(class_proba_3, key = lambda i: i['probability'], reverse=True))
+class_proba.append(sorted(class_proba_4, key = lambda i: i['probability'], reverse=True))
+class_proba.append(sorted(class_proba_5, key = lambda i: i['probability'], reverse=True))
+class_proba.append(sorted(class_proba_6, key = lambda i: i['probability'], reverse=True))
+class_proba.append(sorted(class_proba_7, key = lambda i: i['probability'], reverse=True))
+class_proba.append(sorted(class_proba_8, key = lambda i: i['probability'], reverse=True))
+class_proba.append(sorted(class_proba_9, key = lambda i: i['probability'], reverse=True))
+class_proba.append(sorted(class_proba_10, key = lambda i: i['probability'], reverse=True))
+
+for topic in expected_num.keys():
+    recommended = {}
+    article_nums = []
+    i = 0
+    if topic == 'IRRELEVANT':
+        break
+    while i < expected_num[topic] and i < len(class_proba[all_labels[topic] - 1]) and i < 10:
+        if class_proba[all_labels[topic] - 1][i]['probability'] > 0.2:
+            article_nums.append(class_proba[all_labels[topic] - 1][i]['article_number'])
+            i += 1
+    
+    article_nums = sorted(article_nums)
+    recommended[topic] = article_nums
+    recommendations.append(recommended)
+
+for topic in recommendations:
+    print(topic)
+print()
 
 print('Accuracy score:', accuracy_score(y_test, y_pred))
 print('Precision score:', precision_score(y_test, y_pred, average=None, zero_division=0))
 print('Recall score:', recall_score(y_test, y_pred, average=None, zero_division=0))
 
 print(classification_report(y_test, y_pred))
+
 
 # print("Best parameters:")
 # best_params = clf.best_estimator_.get_params()
