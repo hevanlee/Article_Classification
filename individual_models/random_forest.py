@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, classification_report, confusion_matrix
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, classification_report
 from sklearn.model_selection import RandomizedSearchCV, GridSearchCV, StratifiedKFold
 
 df = pd.read_csv("../training.csv")
@@ -11,36 +11,30 @@ data = df["article_words"]
 topics = df["topic"]
 
 labels = []
+
+all_labels = {
+    'ARTS CULTURE ENTERTAINMENT': 1,
+    'BIOGRAPHIES PERSONALITIES PEOPLE': 2,
+    'DEFENCE': 3,
+    'DOMESTIC MARKETS': 4,
+    'FOREX MARKETS': 5,
+    'HEALTH': 6,
+    'MONEY MARKETS': 7,
+    'SCIENCE AND TECHNOLOGY': 8,
+    'SHARE LISTINGS': 9,
+    'SPORTS': 10,
+    'IRRELEVANT': 0
+}
+
 for topic in topics:
-    if topic == 'ARTS CULTURE ENTERTAINMENT':
-        labels.append(1)
-    elif topic == 'BIOGRAPHIES PERSONALITIES PEOPLE':
-        labels.append(2)
-    elif topic == 'DEFENCE':
-        labels.append(3)
-    elif topic == 'DOMESTIC MARKETS':
-        labels.append(4)
-    elif topic == 'FOREX MARKETS':
-        labels.append(5)
-    elif topic == 'HEALTH':
-        labels.append(6)
-    elif topic == 'MONEY MARKETS':
-        labels.append(7)
-    elif topic == 'SCIENCE AND TECHNOLOGY':
-        labels.append(8)
-    elif topic == 'SHARE LISTINGS':
-        labels.append(9)
-    elif topic == 'SPORTS':
-        labels.append(10)
-    else: 
-        labels.append(0)
+    labels.append(all_labels[topic])
 
 df['labels'] = labels
 
 # Create target vector
 y = labels
 
-# Divide training set into training (9000) and development (500) sets
+# Divide training set into training and development sets
 X_train = data[:9000]
 X_test = data[9000:]
 y_train = y[:9000]
@@ -65,22 +59,11 @@ acc = accuracy_score(y_test, predicted_y)
 prec = precision_score(y_test, predicted_y, average=None, zero_division=0)
 recall = recall_score(y_test, predicted_y, average=None, zero_division=0)
 
+print('Base Model')
 print('Accuracy score:', acc)
 print('Precision score:', prec)
 print('Recall score:', recall)
 print(classification_report(y_test, predicted_y))
-
-# generate the table of precision and recall scores
-def evaluate(model, test_features, test_labels):
-    predictions = model.predict(test_features)
-    errors = abs(predictions - test_labels)
-    mape = 100 * np.mean(errors / test_labels)
-    accuracy = 100 - mape
-    print('Model Performance')
-    print('Average Error: {:0.4f} degrees.'.format(np.mean(errors)))
-    print('Accuracy = {:0.2f}%.'.format(accuracy))
-    
-    return accuracy
 
 ########### Random Search ###########
 
@@ -103,14 +86,10 @@ random_grid = {
 #cross validating
 k = StratifiedKFold(n_splits=2)
 
-# Random search of parameters, using 3 fold cross validation, 
-# search across 10 different combinations, and use all available cores
-
-# Random search of parameters
+# Random search of parameters, using 3 fold cross validation
 rfc_random = RandomizedSearchCV(estimator = clf, param_distributions = random_grid, n_iter = 5, cv = 3, verbose=2, random_state=42, n_jobs = -1)
 
 rfc_random.fit(X_train_tfidf, y_train)
-<<<<<<< HEAD
 print(rfc_random.best_params_)
 best_random = rfc_random.best_estimator_ 
 
@@ -129,16 +108,19 @@ grid_search = GridSearchCV(estimator = clf, param_grid = param_grid,
 grid_search.fit(X_train_tfidf, y_train)
 print(grid_search.best_params_)
 best_grid = grid_search.best_estimator_
-grid_accuracy = evaluate(best_grid, X_test_tfidf, y_test)
 print(best_grid)
 
-########### Evaluation Metrics ###########
+########### Evaluation ###########
 
-def print_improvement(model_accuracy):
-    print('Improvement of {:0.2f}%.'.format( 100 * (model_accuracy - base_accuracy) / base_accuracy))
+# With hyperparameter tuning 
+print('Tuned Model - Grid Search')
+clf = best_grid
+model = clf.fit(X_train_tfidf, y_train)
+predicted_y = model.predict(X_test_tfidf)
+print(classification_report(y_test, predicted_y))
 
-base_accuracy = evaluate(model, X_test_tfidf, y_test)
-random_accuracy = evaluate(best_random, X_test_tfidf, y_test)
-grid_accuracy = evaluate(best_grid, X_test_tfidf, y_test)
-print_improvement(random_accuracy)
-print_improvement(grid_accuracy)
+print('Tuned Model - Random Search')
+clf = best_random
+model = clf.fit(X_train_tfidf, y_train)
+predicted_y = model.predict(X_test_tfidf)
+print(classification_report(y_test, predicted_y))
