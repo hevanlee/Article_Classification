@@ -49,10 +49,7 @@ label_number = [0,1,2,3,4,5,6,7,8,9,10]
 # Create target vector
 y = labels
 
-# current = float(sys.argv[1])/1000
-
-
-# Divide training set into training (9000) and development (500) sets
+# Divide training set into training and development sets
 X_train = data[:9000]
 X_test = data[9000:]
 y_train = y[:9000]
@@ -83,8 +80,7 @@ classifiers = [
     AdaBoostClassifier(),
     MLPClassifier(
         hidden_layer_sizes=(100, ), activation='relu', solver='adam', alpha=0.1, batch_size='auto', learning_rate='constant', learning_rate_init=0.001, power_t=0.5, max_iter=200, shuffle=True, random_state=None, tol=0.0001, verbose=False, warm_start=False, momentum=0.9, nesterovs_momentum=True, early_stopping=False, validation_fraction=0.1, beta_1=0.9, beta_2=0.999, epsilon=1e-08, n_iter_no_change=10
-        #max_fun = 15000
-        #Used shell script here to auto-run every parameter instead since hypertuning takes too long to run
+        # Used shell script here to auto-run every parameter instead since hypertuning takes too long to run
 
     ) # for ADAM 73.8% when run w/ alpha = 1, 78.2% when run w/ alpha = 0.1, 76% w/ alpha = 0.5, 77.6% when run w/ alpha = 0.01
       # for LBFGS, accuracy was highest between alpha 0.2 to 0.4
@@ -94,39 +90,7 @@ model_scores = {}
 counter = 0
 for name, clf in zip(names, classifiers):
     if (name == "Multiple Layer Perceptron"):
-        # print("--" + name)
         model = clf.fit(X_train_tfidf, y_train)
         predicted_y = model.predict(X_test_tfidf)
-        # proba_y = model.predict_proba(X_test_tfidf)
         print(classification_report(y_test, predicted_y))
         print(accuracy_score(y_test,predicted_y))
-        # while counter < 500:
-        #     if predicted_y[counter] != y_test[counter]:
-        #         print ('Predicted is: ', predicted_y[counter])
-        #         print ('Correct is:', y_test[counter])
-        #         print ('Probability is:', proba_y[counter][predicted_y[counter]])
-        #     counter+= 1;
-
-
-#^Do not do this elsewhere , im just setting infinite array elements to be printed at maximum
-
-# number = confusion_matrix(y_true= y_test,y_pred = predicted_y,labels=label_number)
-
-# print (number)
-
-
-
-        # acc = accuracy_score(y_test, predicted_y)
-        # prec = precision_score(y_test, predicted_y, average=None)
-        # recall = recall_score(y_test, predicted_y, average=None)
-
-        # print('Accuracy score:', acc)
-
-        # print('Precision score:', prec)
-        # print('Recall score:', recall)
-
-        
-
-        
-
-

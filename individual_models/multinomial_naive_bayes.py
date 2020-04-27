@@ -48,45 +48,21 @@ df['labels'] = labels
 # Create target vector
 y = labels
 
-# Divide training set into training (9000) and development (500) sets
+# Divide training set into training and development sets
 X_train = X[:9000]
 X_test = X[9000:]
 y_train = y[:9000]
 y_test = y[9000:]
 
-# TODO: Create new unseen test instances
-# test1 = count.transform([''])
-# test2 = count.transform([''])
-
-print("----bnb")
-clf = BernoulliNB()
-model = clf.fit(X_train, y_train)
-
-# print(model.predict(test1))
-# print(model.predict(test2))
-predicted_y = model.predict(X_test)
-# print(y_test, predicted_y)
-# print(model.predict_proba(X_test))
-print('Accuracy score:',accuracy_score(y_test, predicted_y))
-print('Precision score:',precision_score(y_test, predicted_y, average=None, zero_division=0))
-print('Recall score:',recall_score(y_test, predicted_y, average=None, zero_division=0))
-# print(f1_score(y_test, predicted_y, average='micro'))
-# print(f1_score(y_test, predicted_y, average='macro'))
-print(classification_report(y_test, predicted_y))
-
 # Train model
 print("----mnb")
 clf = MultinomialNB()
 model = clf.fit(X_train, y_train)
-
-# print(model.predict(test1))
-# print(model.predict(test2))
 predicted_y = model.predict(X_test)
-# print(y_test, predicted_y)
-# print(model.predict_proba(X_test))
+
+# Print results 
 print('Accuracy score:',accuracy_score(y_test, predicted_y))
 print('Precision score:',precision_score(y_test, predicted_y, average=None, zero_division=0))
 print('Recall score',recall_score(y_test, predicted_y, average=None, zero_division=0))
-# print(f1_score(y_test, predicted_y, average='micro'))
-# print(f1_score(y_test, predicted_y, average='macro'))
+
 print(classification_report(y_test, predicted_y))
