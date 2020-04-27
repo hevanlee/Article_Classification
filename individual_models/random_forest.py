@@ -84,7 +84,7 @@ random_grid = {
     'n_estimators': n_estimators
 }
 #cross validating
-k = StratifiedKFold(n_splits=2)
+k = StratifiedKFold(n_splits=3)
 
 # Random search of parameters, using 3 fold cross validation
 rfc_random = RandomizedSearchCV(estimator = clf, param_distributions = random_grid, n_iter = 5, cv = 3, verbose=2, random_state=42, n_jobs = -1)
