@@ -88,6 +88,7 @@ for i in range(0, len(probas)):
     article['article_words'] = X_test[i]
     article['topic'] = list(all_labels.keys())[list(all_labels.values()).index(y_pred[i])] 
     article['probability'] = max(probas[i])
+    article['label'] = y_test[i]
     
     if y_pred[i] == 1:
         class_proba_1.append(article)
@@ -158,17 +159,71 @@ for topic in expected_num.keys():
         break
     while i < expected_num[topic] and i < len(class_proba[all_labels[topic] - 1]) and i < 10:
         if class_proba[all_labels[topic] - 1][i]['probability'] > 0.2:
-            article_nums.append(class_proba[all_labels[topic] - 1][i]['article_number'])
+            article_nums.append(class_proba[all_labels[topic] - 1][i])
             i += 1
     
-    article_nums = sorted(article_nums)
+    article_nums = sorted(article_nums, key = lambda i: i['article_number'])
     recommended[topic] = article_nums
     recommendations.append(recommended)
 
 # Recommendations
-for topic in recommendations:
-    print(topic)
-print()
+print("Recommended articles:")
+for i in range(0, len(recommendations)):
+    for topic in recommendations[i].keys():
+        nums = []
+        for article in recommendations[i][topic]:
+            nums.append(article['article_number'])
+        print(topic + ":", nums)
+print('__________________________________________________________________________________\n')
+
+# Count number of articles per y_test category)
+# list(all_labels.keys())[list(all_labels.values()).index(value)] --> given value 'value', finds corresponding key in all_labels{}
+# apologies to whoever is marking this for code towards the end
+
+total_per_topic = {}
+for label in y_test:
+    if list(all_labels.keys())[list(all_labels.values()).index(label)] not in total_per_topic.keys():
+        total_per_topic[list(all_labels.keys())[list(all_labels.values()).index(label)]] = 1
+    else:
+        total_per_topic[list(all_labels.keys())[list(all_labels.values()).index(label)]] += 1
+
+# Calculate metrics for recommendations
+print("Metrics for recommendations:")
+
+for i in range(0, len(recommendations)):
+    for topic in recommendations[i].keys():
+        tp = 0
+        total_rec = 0
+        total_topic = 0
+        for article in recommendations[i][topic]:
+            if article['topic'] == list(all_labels.keys())[list(all_labels.values()).index(article['label'])]:
+                tp += 1
+            total_rec += 1
+    
+        if topic in total_per_topic.keys():
+            total_topic = total_per_topic[topic]
+    
+        print(topic + ":")
+        if total_rec == 0:
+            print("Precision: 0.00, 0 articles correctly recommended out of 0 total recommended")
+        else:
+            precision = tp/total_rec
+            print("Precision: %1.2f, %d articles correctly recommended out of %d total recommended" %(precision, tp, total_rec))
+
+        if total_topic == 0:
+            print("Recall: 0.0, %d articles correctly recommended out of 0 total articles in category" %(tp))
+        else:
+            recall = tp/total_topic
+            print("Recall: %1.2f, %d articles correctly recommended out of %d total articles in category" %(recall, tp, total_topic))
+        
+        
+        if precision + recall == 0:
+            print("F1: 0.00")
+        else:
+            f1 = 2*((precision * recall)/(precision + recall))
+            print("F1: %1.2f" %(f1))
+        print()
+print('__________________________________________________________________________________\n')
 
 # Comparing model and predictions with actual labels
 print("Metrics for model test data:")
@@ -177,5 +232,3 @@ print('Precision score:', precision_score(y_test, y_pred, average=None, zero_div
 print('Recall score:', recall_score(y_test, y_pred, average=None, zero_division=0))
 
 print(classification_report(y_test, y_pred))
-
-print("Metrics for recommendations:")
